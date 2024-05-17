@@ -120,16 +120,40 @@ function onButtonPress(sheetName, fechaInicioColLetra, horaInicioColLetra, fecha
 
 /**
  * Convierte el nombre de una columna (letra) en el índice de columna.
- * @param {string} columnName - El nombre de la columna.
- * @returns {number} El índice de la columna.
+ * Esta función convierte un nombre de columna en formato alfabético (por ejemplo, "A", "B", "Z", "AA") en su correspondiente índice numérico
+ * utilizado en Google Apps Script, donde "A" es 0, "B" es 1, "Z" es 25, "AA" es 26, y así sucesivamente.
+ * 
+ * @param {string} columnName - El nombre de la columna en formato alfabético.
+ * @returns {number} El índice de la columna, donde "A" es 0.
+ * 
+ * Ejemplo:
+ *   getColumnIndex("A") devuelve 0.
+ *   getColumnIndex("B") devuelve 1.
+ *   getColumnIndex("Z") devuelve 25.
+ *   getColumnIndex("AA") devuelve 26.
+ * 
+ * Detalles del funcionamiento:
+ *   - La función itera sobre cada carácter del nombre de la columna.
+ *   - Convierte cada carácter en su correspondiente valor numérico.
+ *   - Utiliza un sistema de base 26 para calcular el índice, similar a cómo se calcularía el valor en un sistema numérico de base 26.
+ * 
+ * Nota:
+ *   - El índice devuelto es 0-based, es decir, "A" corresponde a 0, "B" a 1, etc.
  */
 function getColumnIndex(columnName) {
-  var sum = 0;
+  var sum = 0; // Inicializar la suma que contendrá el índice de la columna
+
+  // Iterar sobre cada carácter en el nombre de la columna
   for (var i = 0; i &lt; columnName.length; i++) {
+    // Multiplicar la suma actual por 26 para desplazar el valor en el sistema de base 26
     sum *= 26;
+
+    // Convertir el carácter actual en su valor numérico (A=1, B=2, ..., Z=26)
     sum += (columnName[i].charCodeAt(0) - 'A'.charCodeAt(0) + 1);
   }
-  return sum - 1; // Restar 1 porque los índices en Apps Script empiezan en 0
+
+  // Restar 1 porque los índices en Apps Script empiezan en 0 (A=0, B=1, ...)
+  return sum - 1;
 }
 
 /**
