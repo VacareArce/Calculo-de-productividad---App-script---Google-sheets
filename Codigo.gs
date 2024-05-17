@@ -274,28 +274,47 @@ function convertirFormatoFecha(fechaTexto) {
 
 /**
  * Calcula las horas laborales entre dos fechas y horas dadas.
+ * Esta función toma una fecha y hora de inicio, y una fecha y hora de fin, y calcula la cantidad de horas laborales entre estos dos momentos,
+ * excluyendo los días festivos y fines de semana, y descontando el tiempo de almuerzo.
+ * 
  * @param {string} fechaInicio - La fecha de inicio en formato yyyy-MM-dd.
  * @param {string} horaInicio - La hora de inicio en formato hh:mm.
  * @param {string} fechaFin - La fecha de fin en formato yyyy-MM-dd.
  * @param {string} horaFin - La hora de fin en formato hh:mm.
- * @returns {string} Las horas laborales en formato h,m.
+ * @returns {string} Las horas laborales en formato h,m o "MesO+" si el intervalo excede un mes.
+ * 
+ * Ejemplo:
+ *   horasLaborales("2023-01-01", "08:00", "2023-01-01", "17:00") devuelve "8,0".
+ *   horasLaborales("2023-01-01", "08:00", "2023-01-02", "17:00") devuelve "8,0" excluyendo almuerzo y fines de semana.
+ * 
+ * Detalles del funcionamiento:
+ *   - La función primero verifica si la fecha de inicio y la fecha de fin son el mismo día.
+ *   - Si las fechas son el mismo día, llama a `calcularMinutosLaboralesMismoDia` para calcular los minutos laborales en ese día.
+ *   - Si las fechas son diferentes, llama a `calcularMinutosLaboralesVariosDias` para calcular los minutos laborales a través de varios días.
+ *   - Si el intervalo entre las fechas excede un mes, devuelve "MesO+".
+ *   - Convierte los minutos laborales totales a horas y minutos, y los devuelve en formato h,m.
  */
 function horasLaborales(fechaInicio, horaInicio, fechaFin, horaFin) {
-    // Comparar las fechas directamente
+    // Verificar si la fecha de inicio y la fecha de fin son el mismo día
     var mismoDia = (fechaInicio === fechaFin);
+    
+    // Crear objetos Date para la fecha y hora de inicio y fin
     var inicio = new Date(fechaInicio + "T" + horaInicio);
     var fin = new Date(fechaFin + "T" + horaFin);
 
     var totalMinutosLaborales;
+    
+    // Calcular los minutos laborales dependiendo de si es el mismo día o varios días
     if (mismoDia) {
         totalMinutosLaborales = calcularMinutosLaboralesMismoDia(inicio, fin);
     } else {
         totalMinutosLaborales = calcularMinutosLaboralesVariosDias(inicio, fin);
         if(totalMinutosLaborales == "MesO+"){
-          return "MesO+"
+          return "MesO+"; // Devolver "MesO+" si el intervalo excede un mes
         }
     }
-   
+    
+    // Convertir los minutos laborales totales a horas y minutos
     var horasLaborales = totalMinutosLaborales / 60;
     var horas = Math.floor(horasLaborales);
     var minutos = Math.round((horasLaborales - horas) * 60);
