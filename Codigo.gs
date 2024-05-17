@@ -281,7 +281,7 @@ function formatearHora(horaTexto) {
  * @returns {string} Las horas laborales en formato h,m o "MesO+" si el intervalo excede un mes.
  * 
  * Ejemplo:
- *   horasLaborales("2023-01-01", "08:00", "2023-01-01", "17:00") devuelve "8,0".
+ *   horasLaborales("2023-01-01", "08:00", "2023-01-01", "17:00") devuelve "0".
  *   horasLaborales("2023-01-01", "08:00", "2023-01-02", "17:00") devuelve "8,0" excluyendo almuerzo y fines de semana.
  * 
  * Detalles del funcionamiento:
