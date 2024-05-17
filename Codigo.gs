@@ -171,7 +171,7 @@ function convertirFormatoFecha(fechaTexto) {
     var año = parseInt(coincidencia[3], 10);
 
     // Validación del año
-    if (año &lt; 2023) {
+    if (año < 2023) {
       return 'Fecha no válida';
     }
 
