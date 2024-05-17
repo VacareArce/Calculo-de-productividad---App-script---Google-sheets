@@ -269,9 +269,6 @@ function formatearHora(horaTexto) {
 }
 
 
-
-
-
 /**
  * Calcula las horas laborales entre dos fechas y horas dadas.
  * Esta función toma una fecha y hora de inicio, y una fecha y hora de fin, y calcula la cantidad de horas laborales entre estos dos momentos,
@@ -397,120 +394,6 @@ function getColumnIndex(columnName) {
   return sum - 1; // Restar 1 porque los índices en Apps Script empiezan en 0
 }
 
-/**
- * Convierte una fecha en formato de texto a un formato estándar.
- * @param {string} fechaTexto - La fecha en formato de texto.
- * @returns {string} - La fecha en formato yyyy-MM-dd o 'Fecha no válida' si es incorrecta.
- */
-function convertirFormatoFecha(fechaTexto) {
-  var regexFecha = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/; // Formato dd/MM/yyyy
-  var coincidencia = fechaTexto.match(regexFecha);
-
-  if (coincidencia) {
-    var dia = coincidencia[1];
-    var mes = coincidencia[2];
-    var año = parseInt(coincidencia[3], 10);
-
-    // Validación del año
-    if (año &lt; 2023) {
-      return 'Fecha no válida';
-    }
-
-    // Asegurarse de que el día y el mes tengan dos dígitos
-    dia = dia.length === 1 ? '0' + dia : dia;
-    mes = mes.length === 1 ? '0' + mes : mes;
-
-    return año + '-' + mes + '-' + dia; // Convertir a formato yyyy-MM-dd
-  } else {
-    // En caso de no coincidir con el formato esperado, se intenta parsear directamente
-    var fecha = new Date(fechaTexto);
-    if (!isNaN(fecha.getTime())) {
-      // Verificar si el año es 2023 o posterior
-      var año = fecha.getFullYear();
-      if (año &lt; 2023) {
-        return 'Fecha no válida';
-      }
-      // Formatear la fecha a yyyy-MM-dd
-      var mes = fecha.getMonth() + 1; // getMonth() devuelve el mes del 0 al 11
-      mes = mes &lt; 10 ? '0' + mes : mes;
-      var dia = fecha.getDate();
-      dia = dia &lt; 10 ? '0' + dia : dia;
-      return año + '-' + mes + '-' + dia;
-    } else {
-      // Devuelve un valor predeterminado o maneja el error según sea necesario
-      return 'Fecha no válida';
-    }
-  }
-}
-
-/**
- * Formatea una hora en texto asegurando que tenga dos dígitos para horas y minutos.
- * @param {string} horaTexto - La hora en formato de texto.
- * @returns {string} - La hora formateada en HH:mm.
- */
-function formatearHora(horaTexto) {
-  var partes = horaTexto.split(':');
-  if (partes.length &gt;= 2) {
-    var horas = partes[0];
-    var minutos = partes[1];
-
-    // Añadir un cero si es necesario
-    horas = horas.length === 1 ? '0' + horas : horas;
-    minutos = minutos.length === 1 ? '0' + minutos : minutos;
-
-    return horas + ':' + minutos;
-  } else {
-    // Devolver la hora original si no está en el formato esperado
-    return horaTexto;
-  }
-}
-
-/**
- * Calcula las horas laborales entre dos fechas y horas dadas.
- * @param {string} fechaInicio - La fecha de inicio en formato yyyy-MM-dd.
- * @param {string} horaInicio - La hora de inicio en formato HH:mm.
- * @param {string} fechaFin - La fecha de fin en formato yyyy-MM-dd.
- * @param {string} horaFin - La hora de fin en formato HH:mm.
- * @returns {string} - El número de horas y minutos laborales en formato h,m.
- */
-function horasLaborales(fechaInicio, horaInicio, fechaFin, horaFin) {
-  var mismoDia = (fechaInicio === fechaFin);
-  var inicio = new Date(fechaInicio + "T" + horaInicio);
-  var fin = new Date(fechaFin + "T" + horaFin);
-
-  var totalMinutosLaborales;
-  if (mismoDia) {
-    totalMinutosLaborales = calcularMinutosLaboralesMismoDia(inicio, fin);
-  } else {
-    totalMinutosLaborales = calcularMinutosLaboralesVariosDias(inicio, fin);
-    if (totalMinutosLaborales == "MesO+") {
-      return "MesO+";
-    }
-  }
-
-  var horasLaborales = totalMinutosLaborales / 60;
-  var horas = Math.floor(horasLaborales);
-  var minutos = Math.round((horasLaborales - horas) * 60);
-
-  return horas + "," + minutos;
-}
-
-/**
- * Descuenta el tiempo de almuerzo de la duración total de las horas laborales.
- * @param {Date} horarioInicio - El horario de inicio del trabajo.
- * @param {Date} horarioFin - El horario de fin del trabajo.
- * @returns {number} - Los minutos descontados por el almuerzo.
- */
-function descontarAlmuerzo(horarioInicio, horarioFin) {
-  var inicioAlmuerzo = new Date(horarioInicio.getFullYear(), horarioInicio.getMonth(), horarioInicio.getDate(), 13, 0, 0);
-  var finAlmuerzo = new Date(horarioInicio.getFullYear(), horarioInicio.getMonth(), horarioInicio.getDate(), 14, 0, 0);
-  if (horarioFin &gt; inicioAlmuerzo &amp;&amp; horarioInicio &lt; finAlmuerzo) {
-    var almuerzoInicio = new Date(Math.max(horarioInicio, inicioAlmuerzo));
-    var almuerzoFin = new Date(Math.min(horarioFin, finAlmuerzo));
-    return (almuerzoFin - almuerzoInicio) / (1000 * 60);
-  }
-  return 0;
-}
 
 /**
  * Calcula los minutos laborales entre dos fechas y horas en diferentes días.
