@@ -1,3 +1,52 @@
+/**
+ * Este script calcula las horas laborales entre fechas y horas específicas en una hoja de cálculo de Google Sheets,
+ * excluyendo días festivos y fines de semana, y descontando el tiempo de almuerzo.
+ * 
+ * Requisitos:
+ * 
+ * 1. Hojas de Cálculo:
+ *    - Deben existir dos hojas de cálculo con los nombres exactos: "HConfig" y "festivos".
+ * 
+ * 2. Estructura de las Hojas de Cálculo:
+ * 
+ *    a. HConfig:
+ *       Esta hoja contiene la configuración de las filas y columnas que se utilizarán para los cálculos,
+ *       así como la hoja donde se encuentran los datos. Los datos deben estar organizados de la siguiente manera:
+ * 
+ *       | Fecha1 | Hora1 | Fecha2 | Hora2 | Salida | Nombre Hoja       |
+ *       |--------|-------|--------|-------|--------|-------------------|
+ *       | E      | F     | G      | H     | J      | Seg. Productividad |
+ *       | G      | H     | Q      | R     | U      | Seg. Productividad |
+ * 
+ *    b. festivos:
+ *       Esta hoja contiene los días festivos de los próximos dos años. Debe actualizarse periódicamente.
+ *       Los datos deben estar organizados de la siguiente manera:
+ * 
+ *       | Año | Día          | Fecha       | Festividad                | Fecha     |
+ *       |-----|--------------|-------------|---------------------------|-----------|
+ *       | 2023| 1 de enero   | Martes      | Año Nuevo                 | 01/01/2023|
+ *       | 2023| 6 de enero   | Lunes       | Día de los Reyes Magos    | 06/01/2023|
+ *       | 2023| 20 de marzo  | Lunes       | Día de San José           | 20/03/2023|
+ *       | 2023| 1 de abril   | Domingo     | Domingo de Ramos          | 01/04/2023|
+ *       | 2023| 6 de abril   | Jueves      | Jueves Santo              | 06/04/2023|
+ *       | 2023| 7 de abril   | Viernes     | Viernes Santo             | 07/04/2023|
+ *       | 2023| 9 de abril   | Domingo     | Domingo de Resurrección   | 09/04/2023|
+ *       | 2023| 1 de mayo    | Domingo     | Día del Trabajo           | 01/05/2023|
+ * 
+ * Funcionamiento:
+ * 
+ * La función `onButtonPress` es la función principal que se ejecuta al presionar un botón en la hoja de cálculo.
+ * Esta función lee las configuraciones de la hoja "HConfig" y luego, para cada configuración, lee las fechas y horas de las columnas especificadas,
+ * calcula las horas laborales excluyendo los festivos y fines de semana, y finalmente escribe los resultados en la columna especificada.
+ * 
+ * Las funciones auxiliares se utilizan para convertir y validar fechas y horas, y para realizar los cálculos de las horas laborales.
+ * 
+ * Nota:
+ * Asegúrate de actualizar periódicamente la hoja "festivos" para incluir los días festivos de los próximos años.
+ */
+
+
+
 // Nombre de la hoja que contiene los días festivos - Variable Global
 var Hojafestivos = "festivos";
 
