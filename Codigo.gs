@@ -203,24 +203,72 @@ function convertirFormatoFecha(fechaTexto) {
 }
 
 /**
- * Formatea una hora en formato texto (hh:mm) asegurándose de que tenga dos dígitos para horas y minutos.
- * @param {string} horaTexto - La hora en formato texto.
- * @returns {string} La hora formateada en formato hh:mm.
+ * Convierte una fecha en formato texto a formato yyyy-MM-dd.
+ * Esta función toma una fecha en formato texto (dd/MM/yyyy) y la convierte a un formato estándar ISO (yyyy-MM-dd) utilizado en muchas aplicaciones y sistemas.
+ * Si la fecha es anterior al año 2023 o si el formato es inválido, la función devuelve 'Fecha no válida'.
+ * 
+ * @param {string} fechaTexto - La fecha en formato texto (dd/MM/yyyy).
+ * @returns {string} La fecha en formato yyyy-MM-dd o 'Fecha no válida' si la fecha es inválida.
+ * 
+ * Ejemplo:
+ *   convertirFormatoFecha("01/01/2023") devuelve "2023-01-01".
+ *   convertirFormatoFecha("31/12/2022") devuelve "Fecha no válida".
+ * 
+ * Detalles del funcionamiento:
+ *   - La función primero intenta hacer coincidir la fecha con un formato específico utilizando una expresión regular.
+ *   - Si la fecha coincide con el formato dd/MM/yyyy, se valida y se convierte a yyyy-MM-dd.
+ *   - Si la fecha no coincide con el formato esperado, se intenta parsear directamente utilizando el constructor Date de JavaScript.
+ *   - En ambos casos, se verifica que el año sea 2023 o posterior.
+ * 
+ * Nota:
+ *   - La función maneja fechas inválidas devolviendo 'Fecha no válida'.
+ *   - Asegúrate de pasar las fechas en el formato correcto (dd/MM/yyyy) para obtener resultados precisos.
  */
-function formatearHora(horaTexto) {
-  var partes = horaTexto.split(':');
-  if (partes.length &gt;= 2) {
-    var horas = partes[0];
-    var minutos = partes[1];
+function convertirFormatoFecha(fechaTexto) {
+  // Definir una expresión regular para validar el formato dd/MM/yyyy
+  var regexFecha = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+  
+  // Intentar hacer coincidir la fecha con la expresión regular
+  var coincidencia = fechaTexto.match(regexFecha);
 
-    // Añadir un cero si es necesario
-    horas = horas.length === 1 ? '0' + horas : horas;
-    minutos = minutos.length === 1 ? '0' + minutos : minutos;
+  // Si la fecha coincide con el formato esperado
+  if (coincidencia) {
+    var dia = coincidencia[1];
+    var mes = coincidencia[2];
+    var año = parseInt(coincidencia[3], 10);
 
-    return horas + ':' + minutos;
+    // Validar el año
+    if (año &lt; 2023) {
+      return 'Fecha no válida';
+    }
+
+    // Asegurar que el día y el mes tengan dos dígitos
+    dia = dia.length === 1 ? '0' + dia : dia;
+    mes = mes.length === 1 ? '0' + mes : mes;
+
+    // Devolver la fecha en formato yyyy-MM-dd
+    return año + '-' + mes + '-' + dia;
   } else {
-    // Devolver la hora original si no está en el formato esperado
-    return horaTexto;
+    // Si la fecha no coincide con el formato, intentar parsear directamente
+    var fecha = new Date(fechaTexto);
+    if (!isNaN(fecha.getTime())) {
+      // Verificar que el año sea 2023 o posterior
+      var año = fecha.getFullYear();
+      if (año &lt; 2023) {
+        return 'Fecha no válida';
+      }
+
+      // Formatear la fecha a yyyy-MM-dd
+      var mes = fecha.getMonth() + 1; // getMonth() devuelve el mes del 0 al 11
+      mes = mes &lt; 10 ? '0' + mes : mes;
+      var dia = fecha.getDate();
+      dia = dia &lt; 10 ? '0' + dia : dia;
+      
+      return año + '-' + mes + '-' + dia;
+    } else {
+      // Devolver 'Fecha no válida' si el formato es incorrecto
+      return 'Fecha no válida';
+    }
   }
 }
 
