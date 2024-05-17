@@ -3,6 +3,8 @@ var Hojafestivos = "festivos";
 
 /**
  * Función principal que se ejecuta al presionar el botón.
+ * Esta función calcula las horas laborales entre fechas y horas especificadas en una hoja de cálculo de Google Sheets.
+ *
  * @param {string} sheetName - El nombre de la hoja de cálculo.
  * @param {string} fechaInicioColLetra - La letra de la columna de la fecha de inicio.
  * @param {string} horaInicioColLetra - La letra de la columna de la hora de inicio.
@@ -21,10 +23,10 @@ function onButtonPress(sheetName, fechaInicioColLetra, horaInicioColLetra, fecha
   var horaFinCol = getColumnIndex(horaFinColLetra) + 1;
   var resultadoCol = getColumnIndex(resultadoColLetra) + 1;
 
-  // Obtener la última fila con datos
+  // Obtener la última fila con datos, limitado a un máximo de 3000 filas
   var lastRowWithData = Math.min(3000, sheet.getRange('A:A').getNextDataCell(SpreadsheetApp.Direction.DOWN).getRow());
 
-  // Obtener el rango de datos
+  // Obtener el rango de datos desde la segunda fila hasta la última fila con datos
   var dataRange = sheet.getRange(2, 1, lastRowWithData - 1, sheet.getLastColumn());
   var displayValues = dataRange.getDisplayValues();
 
@@ -33,6 +35,7 @@ function onButtonPress(sheetName, fechaInicioColLetra, horaInicioColLetra, fecha
   // Obtener los valores de la columna de resultados
   var resultados = sheet.getRange(2, resultadoCol, lastRowWithData - 1, 1).getValues();
 
+  // Recorrer cada fila de datos
   for (var i = 0; i &lt; displayValues.length; i++) {
     Logger.log(i);
     if (!resultados[i][0]) {
@@ -47,6 +50,7 @@ function onButtonPress(sheetName, fechaInicioColLetra, horaInicioColLetra, fecha
       Logger.log("Fecha Fin: " + fechaFin);
       Logger.log("Hora Fin: " + horaFin);
 
+      // Verificar si las fechas y horas son válidas
       if (fechaInicio &amp;&amp; horaInicio &amp;&amp; fechaFin &amp;&amp; horaFin) {
         var resultado = horasLaborales(fechaInicio, horaInicio, fechaFin, horaFin);
         resultados[i][0] = resultado;
@@ -56,13 +60,14 @@ function onButtonPress(sheetName, fechaInicioColLetra, horaInicioColLetra, fecha
         resultados[i][0] = 'sd';
       }
 
-      Logger.log("resultado " + (i+1) + " : " + resultados[i][0]);
+      Logger.log("resultado " + (i + 1) + " : " + resultados[i][0]);
     }
   }
 
   // Escribir los resultados en la hoja de cálculo
   sheet.getRange(2, resultadoCol, resultados.length, 1).setValues(resultados);
 }
+
 
 /**
  * Convierte el nombre de una columna (letra) en el índice de columna.
