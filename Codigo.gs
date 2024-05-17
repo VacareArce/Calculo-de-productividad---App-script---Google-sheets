@@ -324,10 +324,19 @@ function horasLaborales(fechaInicio, horaInicio, fechaFin, horaFin) {
 
 /**
  * Descuenta el tiempo de almuerzo del tiempo laboral.
- * @param {Date} horarioInicio - La hora de inicio del trabajo.
- * @param {Date} horarioFin - La hora de fin del trabajo.
- * @returns {number} Los minutos de almuerzo descontados.
+ * Esta función está diseñada para calcular y devolver la cantidad de minutos que el intervalo
+ * de tiempo especificado entre 'horarioInicio' y 'horarioFin' se superpone con un periodo fijo
+ * de almuerzo entre las 13:00 y las 14:00. Si hay una superposición, calcula los minutos
+ * de superposición y los devuelve. 
+ 
+ *
+ * @param {Date} horarioInicio - La hora de inicio del trabajo, como objeto Date.
+ * @param {Date} horarioFin - La hora de fin del trabajo, como objeto Date.
+ * @returns {number} Los minutos de almuerzo descontados si el horario laboral se superpone
+ * con el intervalo de almuerzo fijo.
+ *
  */
+
 function descontarAlmuerzo(horarioInicio, horarioFin) {
     var inicioAlmuerzo = new Date(horarioInicio.getFullYear(), horarioInicio.getMonth(), horarioInicio.getDate(), 13, 0, 0);
     var finAlmuerzo = new Date(horarioInicio.getFullYear(), horarioInicio.get;
