@@ -1,4 +1,4 @@
-// Nombre de la hoja que contiene los días festivos
+// Nombre de la hoja que contiene los días festivos - Variable Global
 var Hojafestivos = "festivos";
 
 /**
