@@ -158,52 +158,6 @@ function getColumnIndex(columnName) {
 
 /**
  * Convierte una fecha en formato texto a formato yyyy-MM-dd.
- * @param {string} fechaTexto - La fecha en formato texto (dd/MM/yyyy).
- * @returns {string} La fecha en formato yyyy-MM-dd o 'Fecha no válida' si la fecha es inválida.
- */
-function convertirFormatoFecha(fechaTexto) {
-  var regexFecha = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/; // Formato dd/MM/yyyy
-  var coincidencia = fechaTexto.match(regexFecha);
-
-  if (coincidencia) {
-    var dia = coincidencia[1];
-    var mes = coincidencia[2];
-    var año = parseInt(coincidencia[3], 10);
-
-    // Validación del año
-    if (año < 2023) {
-      return 'Fecha no válida';
-    }
-
-    // Asegurarse de que el día y el mes tengan dos dígitos
-    dia = dia.length === 1 ? '0' + dia : dia;
-    mes = mes.length === 1 ? '0' + mes : mes;
-
-    return año + '-' + mes + '-' + dia; // Convertir a formato yyyy-MM-dd
-  } else {
-    // En caso de no coincidir con el formato esperado, se intenta parsear directamente
-    var fecha = new Date(fechaTexto);
-    if (!isNaN(fecha.getTime())) {
-      // Verificar si el año es 2023 o posterior
-      var año = fecha.getFullYear();
-      if (año &lt; 2023) {
-        return 'Fecha no válida';
-      }
-      // Formatear la fecha a yyyy-MM-dd
-      var mes = fecha.getMonth() + 1; // getMonth() devuelve el mes del 0 al 11
-      mes = mes &lt; 10 ? '0' + mes : mes;
-      var dia = fecha.getDate();
-      dia = dia &lt; 10 ? '0' + dia : dia;
-      return año + '-' + mes + '-' + dia;
-    } else {
-      // Devuelve un valor predeterminado o maneja el error según sea necesario
-      return 'Fecha no válida';
-    }
-  }
-}
-
-/**
- * Convierte una fecha en formato texto a formato yyyy-MM-dd.
  * Esta función toma una fecha en formato texto (dd/MM/yyyy) y la convierte a un formato estándar ISO (yyyy-MM-dd) utilizado en muchas aplicaciones y sistemas.
  * Si la fecha es anterior al año 2023 o si el formato es inválido, la función devuelve 'Fecha no válida'.
  * 
@@ -271,6 +225,52 @@ function convertirFormatoFecha(fechaTexto) {
     }
   }
 }
+
+
+
+/**
+ * Formatea una hora proporcionada como texto para asegurar que tanto las horas como los minutos
+ * tengan dos dígitos. Si el texto proporcionado no está en un formato reconocible de hora
+ * (es decir, no contiene al menos una separación de ':'), la función devuelve la entrada original.
+ * 
+ * @param {string} horaTexto - La hora en formato de texto, típicamente en formato 'H:M' o 'HH:MM'.
+ * @returns {string} La hora formateada en formato 'HH:MM'. Si el formato original no es adecuado,
+ *                   devuelve el texto original.
+ * 
+ * Ejemplos:
+ *   - formatearHora("9:5") devuelve "09:05".
+ *   - formatearHora("23:9") devuelve "23:09".
+ *   - formatearHora("12:45") devuelve "12:45".
+ *   - formatearHora("textoIncorrecto") devuelve "textoIncorrecto".
+ *
+ * Detalles del funcionamiento:
+ *   - La función intenta dividir el texto de entrada en partes utilizando ':' como delimitador.
+ *   - Si el texto se divide correctamente en al menos dos partes (horas y minutos), cada parte es
+ *     evaluada y formateada para asegurar que tiene dos dígitos. Esto se logra añadiendo un '0'
+ *     delante si es necesario.
+ *   - Si el texto no se puede dividir en al menos dos partes, indica que no está en un formato
+ *     de hora reconocible y devuelve el texto original.
+ */
+function formatearHora(horaTexto) {
+  var partes = horaTexto.split(':');
+  if (partes.length &gt;= 2) {
+    var horas = partes[0];
+    var minutos = partes[1];
+
+    // Añadir un cero si es necesario para asegurar que ambos, horas y minutos, tengan dos dígitos
+    horas = horas.length === 1 ? '0' + horas : horas;
+    minutos = minutos.length === 1 ? '0' + minutos : minutos;
+
+    return horas + ':' + minutos;
+  } else {
+    // Devolver la hora original si no está en el formato esperado
+    return horaTexto;
+  }
+}
+
+
+
+
 
 /**
  * Calcula las horas laborales entre dos fechas y horas dadas.
